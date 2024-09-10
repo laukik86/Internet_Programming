@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirt Order Page</title>
+    <link rel="stylesheet" href="index.css">
+
+</head>
+<body>
+
+    <h1>T-Shirt Order Form</h1>
+
+    <form id="tshirtForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="mobile">Mobile No:</label>
+        <input type="text" id="mobile" name="mobile" required><br><br>
+
+        <label for="message">T-Shirt Message:</label>
+        <textarea id="message" name="message" maxlength="50"></textarea><br><br>
+
+        <button type="button" onclick="processOrder()">Submit Order</button>
+    </form>
+
+    <div id="receipt" class="receipt" style="display: none;">
+        <h2>Order Receipt</h2>
+        <p id="receiptDetails"></p>
+        <p id="orderDate"></p>
+    </div>
+
+    <script>
+        // Person class
+        class Person {
+            constructor(name, mobile) {
+                this.name = name;
+                this.mobile = mobile;
+            }
+
+            printDetails() {
+                return `Name: ${this.name}, Mobile: ${this.mobile}`;
+            }
+        }
+
+        // Student class inheriting from Person
+        class Student extends Person {
+            constructor(name, mobile, rollNo) {
+                super(name, mobile);
+                if (rollNo === 0) {
+                    throw new Error('Roll No cannot be zero');
+                }
+                this.rollNo = rollNo;
+            }
+
+            printDetails() {
+                return `${super.printDetails()}, Roll No: ${this.rollNo}`;
+            }
+        }
+
+        // Arrow function example as a method
+        const printReceiptDetails = (person) => {
+            return person.printDetails();
+        };
+
+        // Form validation and order processing
+        function processOrder() {
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const message = document.getElementById('message').value;
+
+            // Validate form fields
+            if (!validateForm(name, mobile, message)) {
+                return;
+            }
+
+            // Create a Person object and print details
+            const person = new Person(name, mobile);
+            const receiptDetails = printReceiptDetails(person);
+            document.getElementById('receiptDetails').innerHTML = receiptDetails;
+
+            // Display order date
+            const orderDate = new Date();
+            document.getElementById('orderDate').innerHTML = `Order Date: ${orderDate.toLocaleDateString()} ${orderDate.toLocaleTimeString()}`;
+
+            // Show receipt
+            document.getElementById('receipt').style.display = 'block';
+        }
+
+        // Validate form data
+        function validateForm(name, mobile, message) {
+            if (name === '' || mobile === '') {
+                alert('Name and Mobile No are required!');
+                return false;
+            }
+
+            if (!/^\d{9}$/.test(mobile)) {
+                alert('Mobile number must be exactly 9 digits!');
+                return false;
+            }
+
+            if (message.length > 50) {
+                alert('Message can only be 50 characters long!');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Example of creating a Student object and demonstrating inheritance, super, and error handling
+        try {
+            const student = new Student('Alice', '123456789', 0); // Will throw an error
+            console.log(student.printDetails());
+        } catch (error) {
+            console.error(error.message);
+        }
+    </script>
+</body>
+</html>
